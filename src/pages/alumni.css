@@ -1,0 +1,23 @@
+@import './global.css';
+
+.alumniList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  column-gap: max(2em, calc(6vw - 1em));
+}
+
+.alumniCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.alumniPage p {
+  text-align: center;
+  font-size: max(1.5em, calc(4vw - 2em));
+}
+
+.alumniPage p:hover {
+  font-size: max(1.75em, calc(4.5vw - 2em));
+  text-decoration: line-through;
+}

@@ -1,0 +1,22 @@
+@import './global.css';
+
+.memberContainer {
+  padding: 0em 5em;
+  max-width: 80vw;
+  margin: 0 auto;         
+  text-align: center; 
+  
+}
+
+.cardListContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  justify-items: center;
+  align-items: center;
+  gap: 4em;
+}
+
+.buttonContainer {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}

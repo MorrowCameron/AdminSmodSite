@@ -1,0 +1,31 @@
+.cardContainer {
+  display: flex;
+  flex-direction: column;      /* Stack items vertically */
+  align-items: center;         /* Horizontally center them */
+  justify-content: center;     /* Vertically center if container has height */
+  background-color: rgb(155, 155, 155);
+  width: calc(20ch + 1em + 10vw);
+  max-width: fit-content;
+  padding: 0.1rem;
+  text-align: center;          /* Center text inside elements */
+}
+
+.subcardContainer {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  max-width: fit-content;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.textStyling {
+  margin-top: 0.5em;
+  font-size: calc(1.2em + 1vw);
+}
