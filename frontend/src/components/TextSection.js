@@ -1,10 +1,16 @@
 // src/components/TextSection.jsx
 import React from 'react';
 
-const TextSection = ({ title, value, onChange }) => (
+const TextSection = ({ title, value, onChange, id = 'text-section' }) => (
   <>
-    <h2>{title}</h2>
-    <input value={value} onChange={onChange} type="text" />
+    {title && <h2>{title}</h2>}
+    <label htmlFor={id} className="visually-hidden">{title || 'Text input'}</label>
+    <input
+      id={id}
+      value={value}
+      onChange={onChange}
+      type="text"
+    />
   </>
 );
 

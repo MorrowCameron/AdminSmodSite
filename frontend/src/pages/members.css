@@ -98,3 +98,27 @@ body.dark .modalContent input[type="file"] {
 .modalButton:hover:enabled {
   background-color: #3d8f3d;
 }
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inputWrapper input[type="text"],
+.inputWrapper input[type="file"] {
+  text-align: center;
+  max-width: 100%;
+}
+
+/* Visually hidden but screen-reader accessible */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

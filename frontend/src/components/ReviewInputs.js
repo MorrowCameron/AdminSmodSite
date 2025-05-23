@@ -11,11 +11,17 @@ const ReviewInputs = ({ reviews, setReviews }) => {
   return (
     <div className="reviewContainer">
       {reviews.map((text, i) => (
-        <input
-          key={i}
-          value={text}
-          onChange={(e) => handleChange(i, e.target.value)}
-        />
+        <div key={i}>
+          <label htmlFor={`review-${i}`} className="visually-hidden">
+            Review {i + 1}
+          </label>
+          <input
+            id={`review-${i}`}
+            value={text}
+            onChange={(e) => handleChange(i, e.target.value)}
+            aria-label={`Review ${i + 1}`}
+          />
+        </div>
       ))}
     </div>
   );

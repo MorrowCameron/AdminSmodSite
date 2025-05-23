@@ -1,11 +1,24 @@
+// src/components/CarouselPage.jsx
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import './carouselPage.css';
 
 const CarouselPage = ({ image, description, caption, onClick }) => {
   return (
-    <div className="carouselPageContainer" onClick={onClick} style={{ cursor: 'pointer' }}>
-      <img className="carouselImageContainer" src={image} alt={description} />
+    <div
+      className="carouselPageContainer clickable"
+      onClick={onClick}
+      role="button"
+      aria-label={caption || 'Carousel image'}
+      tabIndex={0}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onClick()}
+    >
+      <img
+        className="carouselImageContainer"
+        src={image}
+        alt={description || 'Slideshow image'}
+        aria-label={caption || description || 'Carousel slide'}
+      />
     </div>
   );
 };

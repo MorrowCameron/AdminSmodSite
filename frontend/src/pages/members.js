@@ -86,7 +86,7 @@ const Members = () => {
       first_name,
       middle_name,
       last_name,
-      img: img?.startsWith('http') ? img : '',
+      img: img?.startsWith('http') ? img : 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
     }));
     localStorage.setItem('membersTextData', JSON.stringify(textOnly));
     window.alert('Only text-based member data has been saved to localStorage. Eventually this will be a database save.');
