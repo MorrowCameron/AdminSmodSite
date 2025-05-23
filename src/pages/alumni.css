@@ -36,13 +36,15 @@
 }
 
 .modalContent {
-  background: white;
+  background-color: var(--modal-background);
+  color: var(--modal-text-color);
   padding: 2em;
   border-radius: 1em;
   max-width: 90%;
   width: 400px;
   box-sizing: border-box;
   text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 .modalContent input {
@@ -52,6 +54,14 @@
   padding: 0.5em;
   border-radius: 0.5em;
   border: 1px solid #ccc;
+  background-color: white;
+  color: #000;
+}
+
+body.dark .modalContent input {
+  background-color: #444;
+  color: #f0f0f0;
+  border: 1px solid #666;
 }
 
 .modalButtonRow {
@@ -71,6 +81,7 @@
   cursor: pointer;
   flex: 1;
   text-align: center;
+  transition: background-color 0.2s ease;
 }
 
 .modalButton:disabled {

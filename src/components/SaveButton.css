@@ -9,7 +9,7 @@
 /* Main Save Button style */
 .saveButton {
   background-color: var(--accent-color);
-  color: var(--text-color);
+  color: var(--text-accent-color);
   border: none;
   padding: max(1em, calc(4vw - 1em)) max(3em, calc(8vw - 1em));
   font-size: 1.5em;
@@ -67,7 +67,7 @@
   border: none;
   font-size: 1.2em;
   padding: 0.75em 2em;
-  color: var(--text-color);
+  color: var(--text-accent-color);
   border-radius: 1em;
   text-shadow: 1px 1px 2px black;
   margin: 0 0.5em;

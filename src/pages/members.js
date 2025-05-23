@@ -1,7 +1,10 @@
+// src/pages/members.js
 import React, { useState, useEffect } from 'react';
 import './members.css';
-import Card from '../components/card';
 import SaveButton from '../components/SaveButton';
+import DarkModeToggle from '../components/DarkModeToggle';
+import MemberCardList from '../components/MemberCardList';
+import AddMemberModal from '../components/AddMemberModal';
 
 const Members = () => {
   const [members, setMembers] = useState([]);
@@ -13,7 +16,7 @@ const Members = () => {
     img: '',
   });
 
-  // Load members from localStorage on first render
+  // Load saved members from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('membersTextData');
     if (saved) {
@@ -23,12 +26,23 @@ const Members = () => {
         console.warn('Failed to parse members from localStorage');
       }
     } else {
-      // Default fallback
       setMembers([
         {
           first_name: 'John',
           middle_name: 'Q',
           last_name: 'Smith',
+          img: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+        },
+        {
+          first_name: 'Jane',
+          middle_name: '',
+          last_name: 'Doe',
+          img: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+        },
+        {
+          first_name: 'Sam',
+          middle_name: '',
+          last_name: 'Lee',
           img: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
         },
       ]);
@@ -56,7 +70,7 @@ const Members = () => {
     reader.onloadend = () => {
       setNewMember(prev => ({
         ...prev,
-        img: reader.result, // Still allows temp preview
+        img: reader.result,
       }));
     };
     reader.readAsDataURL(file);
@@ -72,7 +86,7 @@ const Members = () => {
       first_name,
       middle_name,
       last_name,
-      img: img?.startsWith('http') ? img : '', // Only save remote URLs
+      img: img?.startsWith('http') ? img : '',
     }));
     localStorage.setItem('membersTextData', JSON.stringify(textOnly));
     window.alert('Only text-based member data has been saved to localStorage. Eventually this will be a database save.');
@@ -80,13 +94,11 @@ const Members = () => {
 
   return (
     <div className='memberPage'>
+      <DarkModeToggle />
       <h1>Current members</h1>
+
       <div className='memberContainer'>
-        <div className="cardListContainer">
-          {members.map((member, index) => (
-            <Card key={index} {...member} onRemove={() => handleRemove(index)} />
-          ))}
-        </div>
+        <MemberCardList members={members} onRemove={handleRemove} />
 
         <div className="buttonContainer">
           <button onClick={() => setShowModal(true)}>Add Member</button>
@@ -101,52 +113,14 @@ const Members = () => {
         />
       </div>
 
-      {/* Add Member Modal */}
       {showModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>Add New Member</h2>
-
-            {newMember.img && (
-              <div style={{ marginBottom: '1em' }}>
-                <img
-                  src={newMember.img}
-                  alt="Preview"
-                  style={{ width: '150px', borderRadius: '0.5em', border: '1px solid #ccc' }}
-                />
-              </div>
-            )}
-            <input type="file" accept="image/*" onChange={handleImageUpload} />
-            <input
-              type="text"
-              placeholder="First Name"
-              value={newMember.first_name}
-              onChange={(e) => setNewMember({ ...newMember, first_name: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Middle Name (optional)"
-              value={newMember.middle_name}
-              onChange={(e) => setNewMember({ ...newMember, middle_name: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={newMember.last_name}
-              onChange={(e) => setNewMember({ ...newMember, last_name: e.target.value })}
-            />
-            <div className="modalButtonRow">
-              <button
-                className="modalButton"
-                onClick={handleAdd}
-                disabled={!newMember.first_name || !newMember.last_name}
-              >
-                Add
-              </button>
-              <button className="modalButton" onClick={handleCancel}>Cancel</button>
-            </div>
-          </div>
-        </div>
+        <AddMemberModal
+          newMember={newMember}
+          onChange={setNewMember}
+          onUpload={handleImageUpload}
+          onAdd={handleAdd}
+          onCancel={handleCancel}
+        />
       )}
     </div>
   );

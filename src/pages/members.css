@@ -1,11 +1,10 @@
 @import './global.css';
 
 .memberContainer {
-  padding: 0em 5em;
+  padding: 0 5em;
   max-width: 80vw;
-  margin: 0 auto;         
-  text-align: center; 
-  
+  margin: 0 auto;
+  text-align: center;
 }
 
 .cardListContainer {
@@ -21,6 +20,7 @@
   margin-bottom: 2em;
 }
 
+/* Modal Overlay */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -34,16 +34,20 @@
   z-index: 999;
 }
 
+/* Modal Content */
 .modalContent {
-  background: white;
+  background-color: var(--modal-background);
+  color: var(--modal-text-color);
   padding: 2em;
   border-radius: 1em;
   max-width: 90%;
   width: 400px;
   box-sizing: border-box;
   text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
 }
 
+/* Modal Inputs */
 .modalContent input[type="text"],
 .modalContent input[type="file"] {
   width: 100%;
@@ -52,8 +56,18 @@
   padding: 0.5em;
   border-radius: 0.5em;
   border: 1px solid #ccc;
+  background-color: white;
+  color: #000;
 }
 
+body.dark .modalContent input[type="text"],
+body.dark .modalContent input[type="file"] {
+  background-color: #444;
+  color: #f0f0f0;
+  border: 1px solid #666;
+}
+
+/* Modal Button Layout */
 .modalButtonRow {
   display: flex;
   justify-content: space-between;
@@ -61,6 +75,7 @@
   margin-top: 1em;
 }
 
+/* Modal Buttons */
 .modalButton {
   font-size: 1em;
   padding: 0.5em 1em;
@@ -72,6 +87,7 @@
   flex-grow: 1;
   text-align: center;
   white-space: nowrap;
+  transition: background-color 0.2s ease;
 }
 
 .modalButton:disabled {

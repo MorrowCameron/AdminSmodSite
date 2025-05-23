@@ -2,10 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import './home.css';
 import defaultBanner from '../images/WebsiteBanner.png';
-import Carousel from 'react-bootstrap/Carousel';
-import CarouselPage from '../components/carouselPage';
 import ImageUploadModal from '../components/ImageUploadModal';
 import SaveButton from '../components/SaveButton';
+import DarkModeToggle from '../components/DarkModeToggle';
+import BannerSection from '../components/BannerSection';
+import TextSection from '../components/TextSection';
+import CarouselSection from '../components/CarouselSection';
+import ReviewInputs from '../components/ReviewInputs';
 
 const placeholder = {
   image:
@@ -42,7 +45,7 @@ const Home = () => {
     'Review 3',
   ]);
 
-  // Load text content from localStorage on mount
+  // Load from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('homeTextData');
     if (saved) {
@@ -101,39 +104,31 @@ const Home = () => {
 
   return (
     <div className="homePage">
+      <DarkModeToggle />
+
       {/* Banner */}
-      <div
-        className="bannerContainer"
+      <BannerSection
+        bannerImage={bannerImage}
         onClick={() => openUploadModal('banner')}
-        style={{ cursor: 'pointer' }}
-      >
-        <img className="banner" src={bannerImage.src} alt={bannerImage.alt} />
-      </div>
-
-      {/* Carousel 1 */}
-      <div className="carouselContainer">
-        <Carousel>
-          {carouselImages.map((item, idx) => (
-            <Carousel.Item key={idx}>
-              <CarouselPage
-                {...item}
-                onClick={() => openUploadModal('carousel1', idx)}
-              />
-            </Carousel.Item>
-          ))}
-        </Carousel>
-      </div>
-
-      {/* Text sections */}
-      <h1>What is "Smile and Nod"</h1>
-      <input
-        value={aboutText}
-        onChange={(e) => setAboutText(e.target.value)}
-        type="text"
       />
 
-      <h2>When/Where Can I Watch a Show?</h2>
-      <input
+      {/* Carousel 1 */}
+      <CarouselSection
+        images={carouselImages}
+        onImageClick={openUploadModal}
+        source="carousel1"
+      />
+
+      {/* Text Sections */}
+      <h1>What is "Smile and Nod"</h1>
+      <TextSection
+        title=""
+        value={aboutText}
+        onChange={(e) => setAboutText(e.target.value)}
+      />
+
+      <TextSection
+        title="When/Where Can I Watch a Show?"
         value={showTimeText}
         onChange={(e) => setShowTimeText(e.target.value)}
       />
@@ -141,36 +136,20 @@ const Home = () => {
       <h2>What Does An Improv Show Look Like?</h2>
 
       {/* Carousel 2 */}
-      <div className="carouselContainer">
-        <Carousel>
-          {carousel2Images.map((item, idx) => (
-            <Carousel.Item key={idx}>
-              <CarouselPage
-                {...item}
-                onClick={() => openUploadModal('carousel2', idx)}
-              />
-            </Carousel.Item>
-          ))}
-        </Carousel>
-      </div>
+      <CarouselSection
+        images={carousel2Images}
+        onImageClick={openUploadModal}
+        source="carousel2"
+      />
 
       {/* Reviews */}
       <h2>Don't Trust We're Funny? Check Out These "Real" Reviews!</h2>
-      <div className="reviewContainer">
-        {reviewTexts.map((text, i) => (
-          <input
-            key={i}
-            value={text}
-            onChange={(e) => {
-              const updated = [...reviewTexts];
-              updated[i] = e.target.value;
-              setReviewTexts(updated);
-            }}
-          />
-        ))}
-      </div>
+      <ReviewInputs
+        reviews={reviewTexts}
+        setReviews={setReviewTexts}
+      />
 
-      {/* Save button */}
+      {/* Save Button */}
       <div className="buttonContainer">
         <SaveButton
           onSave={handleSave}
@@ -179,7 +158,7 @@ const Home = () => {
         />
       </div>
 
-      {/* Image-upload modal */}
+      {/* Upload Modal */}
       <ImageUploadModal
         show={modalState.show}
         onHide={closeUploadModal}

@@ -1,0 +1,29 @@
+.darkTogglePanel {
+  position: fixed;
+  top: 1em;
+  right: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 1000;
+}
+
+.darkToggleArrow {
+  font-size: 1.5em;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0.3em;
+}
+
+.darkModeToggleButton {
+  margin-top: 0.5em;
+  padding: 0.5em 1em;
+  font-size: 1em;
+  border-radius: 0.5em;
+  border: none;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  cursor: pointer;
+}
