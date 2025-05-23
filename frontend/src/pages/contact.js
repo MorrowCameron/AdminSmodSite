@@ -1,4 +1,3 @@
-// src/pages/contact.js
 import React, { useState, useEffect } from 'react';
 import SaveButton from '../components/SaveButton';
 import ContactSection from '../components/ContactSection';

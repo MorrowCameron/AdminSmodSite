@@ -1,4 +1,3 @@
-// src/pages/home.js
 import React, { useState, useEffect } from 'react';
 import './home.css';
 import defaultBanner from '../images/WebsiteBanner.png';
@@ -45,7 +44,6 @@ const Home = () => {
     'Review 3',
   ]);
 
-  // Load from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('homeTextData');
     if (saved) {
@@ -106,20 +104,17 @@ const Home = () => {
     <div className="homePage">
       <DarkModeToggle />
 
-      {/* Banner */}
       <BannerSection
         bannerImage={bannerImage}
         onClick={() => openUploadModal('banner')}
       />
 
-      {/* Carousel 1 */}
       <CarouselSection
         images={carouselImages}
         onImageClick={openUploadModal}
         source="carousel1"
       />
 
-      {/* Text Sections */}
       <h1>What is "Smile and Nod"</h1>
       <TextSection
         title=""
@@ -135,21 +130,18 @@ const Home = () => {
 
       <h2>What Does An Improv Show Look Like?</h2>
 
-      {/* Carousel 2 */}
       <CarouselSection
         images={carousel2Images}
         onImageClick={openUploadModal}
         source="carousel2"
       />
 
-      {/* Reviews */}
       <h2>Don't Trust We're Funny? Check Out These "Real" Reviews!</h2>
       <ReviewInputs
         reviews={reviewTexts}
         setReviews={setReviewTexts}
       />
 
-      {/* Save Button */}
       <div className="buttonContainer">
         <SaveButton
           onSave={handleSave}
@@ -158,7 +150,6 @@ const Home = () => {
         />
       </div>
 
-      {/* Upload Modal */}
       <ImageUploadModal
         show={modalState.show}
         onHide={closeUploadModal}

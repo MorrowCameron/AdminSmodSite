@@ -1,4 +1,3 @@
-// src/components/BannerSection.jsx
 import React from 'react';
 
 const BannerSection = ({ bannerImage, onClick }) => (

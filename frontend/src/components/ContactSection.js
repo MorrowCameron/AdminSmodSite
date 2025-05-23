@@ -1,4 +1,3 @@
-// src/components/ContactSection.jsx
 import React from 'react';
 
 const ContactSection = ({ label, href, linkText, value, onChange, linkClass }) => {

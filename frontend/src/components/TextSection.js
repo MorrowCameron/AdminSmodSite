@@ -1,4 +1,3 @@
-// src/components/TextSection.jsx
 import React from 'react';
 
 const TextSection = ({ title, value, onChange, id = 'text-section' }) => (

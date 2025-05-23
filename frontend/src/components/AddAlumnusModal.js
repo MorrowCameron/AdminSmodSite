@@ -1,4 +1,3 @@
-// src/components/AddAlumnusModal.jsx
 import React from 'react';
 
 const AddAlumnusModal = ({ newAlumnus, onChange, onAdd, onCancel }) => (

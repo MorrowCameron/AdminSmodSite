@@ -1,4 +1,3 @@
-// src/components/CarouselSection.jsx
 import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import CarouselPage from './carouselPage';

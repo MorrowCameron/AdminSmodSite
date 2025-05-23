@@ -1,7 +1,6 @@
-// src/components/SaveButton.js
 import React, { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import './SaveButton.css'; // for additional custom styles
+import './SaveButton.css'; 
 
 const SaveButton = ({
   onSave,

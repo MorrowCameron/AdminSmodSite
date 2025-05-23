@@ -1,7 +1,7 @@
 .carouselImageContainer {
   width: 100%;
   max-width: 400px;
-  aspect-ratio: 4 / 5; /* Ensures consistent shape */
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   display: flex;
   justify-content: center;

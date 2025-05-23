@@ -1,4 +1,3 @@
-// src/components/AddMemberModal.jsx
 import React from 'react';
 
 const AddMemberModal = ({

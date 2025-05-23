@@ -1,4 +1,3 @@
-// src/pages/members.js
 import React, { useState, useEffect } from 'react';
 import './members.css';
 import SaveButton from '../components/SaveButton';
@@ -16,7 +15,6 @@ const Members = () => {
     img: '',
   });
 
-  // Load saved members from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('membersTextData');
     if (saved) {

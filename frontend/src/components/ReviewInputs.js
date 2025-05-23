@@ -1,4 +1,3 @@
-// src/components/ReviewInputs.jsx
 import React from 'react';
 
 const ReviewInputs = ({ reviews, setReviews }) => {

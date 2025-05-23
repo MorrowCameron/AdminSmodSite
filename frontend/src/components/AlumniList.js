@@ -1,4 +1,3 @@
-// src/components/AlumniList.jsx
 import React from 'react';
 
 const AlumniList = ({ alumni, onRemove }) => (
