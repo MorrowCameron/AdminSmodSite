@@ -1,0 +1,53 @@
+@import './global.css';
+
+.bannerContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.banner {
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+.banner:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.carouselContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2em;
+  gap: 1em;
+}
+
+.homePage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2em;
+}
+
+.reviewContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 600px) {
+  .reviewContainer {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2em;
+  }
+}
+
+.homePage {
+  margin-bottom: 10em;
+}

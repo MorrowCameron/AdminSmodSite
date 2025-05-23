@@ -1,0 +1,32 @@
+/* src/pages/login.css */
+.loginPage {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  background: white;
+  padding: 2em;
+  border-radius: 0.5em;
+}
+
+input {
+  padding: 0.5em;
+  font-size: 1em;
+}
+
+button {
+  padding: 0.5em;
+  font-weight: bold;
+}
+
+.error {
+  color: red;
+  font-size: 0.9em;
+}

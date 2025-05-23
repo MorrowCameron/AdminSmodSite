@@ -1,0 +1,94 @@
+@import './global.css';
+
+.alumniList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  column-gap: max(2em, calc(6vw - 1em));
+}
+
+.alumniCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.alumniPage p {
+  text-align: center;
+  font-size: max(1.5em, calc(4vw - 2em));
+}
+
+.alumniPage p:hover {
+  font-size: max(1.75em, calc(4.5vw - 2em));
+  text-decoration: line-through;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modalContent {
+  background-color: var(--modal-background);
+  color: var(--modal-text-color);
+  padding: 2em;
+  border-radius: 1em;
+  max-width: 90%;
+  width: 400px;
+  box-sizing: border-box;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.modalContent input {
+  width: 100%;
+  margin: 0.5em 0;
+  font-size: 1em;
+  padding: 0.5em;
+  border-radius: 0.5em;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #000;
+}
+
+body.dark .modalContent input {
+  background-color: #444;
+  color: #f0f0f0;
+  border: 1px solid #666;
+}
+
+.modalButtonRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  margin-top: 1em;
+}
+
+.modalButton {
+  font-size: 1em;
+  padding: 0.6em 1.5em;
+  border-radius: 0.6em;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+  flex: 1;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+.modalButton:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.modalButton:hover:enabled {
+  background-color: #3d8f3d;
+}

@@ -1,0 +1,41 @@
+@import 'global.css';
+
+.contactLinkContainer {
+  text-align: center;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.email {
+  color: gold;
+}
+
+.email:hover {
+  color: yellow;
+}
+
+.Instagram {
+  color: purple;
+}
+
+.Instagram:hover {
+  color: rgb(187, 107, 187);
+}
+
+.GroupMe {
+  color: blue;
+}
+
+.GroupMe:hover {
+  color: cyan;
+}
+
+.contactPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+}
