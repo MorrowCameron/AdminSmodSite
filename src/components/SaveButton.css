@@ -1,0 +1,79 @@
+/* Save Button container */
+.saveButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2em;
+}
+
+/* Main Save Button style */
+.saveButton {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  border: none;
+  padding: max(1em, calc(4vw - 1em)) max(3em, calc(8vw - 1em));
+  font-size: 1.5em;
+  cursor: pointer;
+  border-radius: 1em;
+  transition: transform 0.2s ease;
+  text-shadow: 1px 1px 2px black;
+}
+
+.saveButton:hover {
+  transform: scale(1.05);
+}
+
+/* Modal container styling */
+.customSaveModal .modal-content {
+  background-color: var(--background-color);
+  color: #fff;
+  border: 3px solid var(--accent-color);
+  border-radius: 1em;
+  text-align: center;
+  padding: 1em;
+}
+
+/* Modal title styling */
+.saveModalTitle {
+  width: 100%;
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  text-shadow: 1px 1px 2px black;
+  margin: 0.5em 0;
+}
+
+/* Modal body (main message) */
+.saveModalBody {
+  font-size: 1.3em;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+  padding: 2em 1.5em;
+  line-height: 1.6;
+}
+
+/* Modal footer and header alignment */
+.saveModalHeader,
+.saveModalFooter {
+  border: none;
+  justify-content: center;
+}
+
+/* Buttons inside modal */
+.cancelButton,
+.confirmButton {
+  background-color: var(--accent-color);
+  border: none;
+  font-size: 1.2em;
+  padding: 0.75em 2em;
+  color: var(--text-color);
+  border-radius: 1em;
+  text-shadow: 1px 1px 2px black;
+  margin: 0 0.5em;
+}
+
+.cancelButton:hover,
+.confirmButton:hover {
+  opacity: 0.9;
+}

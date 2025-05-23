@@ -1,14 +1,18 @@
 .cardContainer {
   display: flex;
-  flex-direction: column;      /* Stack items vertically */
-  align-items: center;         /* Horizontally center them */
-  justify-content: center;     /* Vertically center if container has height */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background-color: rgb(155, 155, 155);
-  width: calc(20ch + 1em + 10vw);
-  max-width: fit-content;
-  padding: 0.1rem;
-  text-align: center;          /* Center text inside elements */
+  width: 100%;
+  max-width: 240px;
+  padding: 1em;
+  text-align: center;
+  border-radius: 0.5em;
+  box-sizing: border-box;
+  transition: transform 0.2s ease;
 }
+
 
 .subcardContainer {
   justify-content: center;
@@ -28,4 +32,30 @@
 .textStyling {
   margin-top: 0.5em;
   font-size: calc(1.2em + 1vw);
+}
+
+.closeButton {
+  position: absolute;
+  top: 0.3em;
+  right: 0.5em;
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  color: #444;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1;
+}
+
+.closeButton:hover {
+  color: red;
+}
+
+.imageContainer img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border: 2px solid #444;
+  border-radius: 0.5em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }

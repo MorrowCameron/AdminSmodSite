@@ -6,8 +6,11 @@
 }
 
 .banner {
-  width: 90%;
-  height: 15em;
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  object-fit: cover;
+  display: block;
 }
 
 .banner:hover {

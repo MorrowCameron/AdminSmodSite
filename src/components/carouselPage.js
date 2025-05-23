@@ -2,13 +2,12 @@ import React from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import './carouselPage.css';
 
-const CarouselPage = (props) => {
-    return (
-        <div className="carouselPageContainer">
-            <img className="carouselImageContainer" src={props.image} alt={props.description}/>
-            <p className="carouselCaptionText">{props.caption}</p>
-        </div>
-    );
-}
+const CarouselPage = ({ image, description, caption, onClick }) => {
+  return (
+    <div className="carouselPageContainer" onClick={onClick} style={{ cursor: 'pointer' }}>
+      <img className="carouselImageContainer" src={image} alt={description} />
+    </div>
+  );
+};
 
 export default CarouselPage;
