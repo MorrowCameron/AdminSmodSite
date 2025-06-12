@@ -16,9 +16,6 @@ logs/
 *.log
 npm-debug.log*
 
-# Uploads (adjust if you want uploads committed)
-uploads/
-
 # Database dumps
 dump/
 
