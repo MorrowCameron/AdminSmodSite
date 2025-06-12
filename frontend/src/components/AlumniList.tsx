@@ -1,6 +1,16 @@
 import React from 'react';
 
-const AlumniList = ({ alumni, onRemove }) => (
+interface Alumnus {
+  first_name: string;
+  last_name: string;
+}
+
+interface AlumniListProps {
+  alumni: Alumnus[];
+  onRemove: (index: number) => void;
+}
+
+const AlumniList: React.FC<AlumniListProps> = ({ alumni, onRemove }) => (
   <div className="alumniList">
     {alumni.map((alumnus, index) => (
       <div

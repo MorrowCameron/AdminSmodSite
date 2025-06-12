@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './DarkModeToggle.css';
 
-const DarkModeToggle = () => {
+const DarkModeToggle: React.FC = () => {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
   });
@@ -13,7 +13,7 @@ const DarkModeToggle = () => {
     } else {
       document.body.classList.remove('dark');
     }
-    localStorage.setItem('darkMode', darkMode);
+    localStorage.setItem('darkMode', darkMode.toString());
   }, [darkMode]);
 
   return (

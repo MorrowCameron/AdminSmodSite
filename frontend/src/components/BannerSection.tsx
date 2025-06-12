@@ -1,6 +1,16 @@
 import React from 'react';
 
-const BannerSection = ({ bannerImage, onClick }) => (
+interface BannerImage {
+  src: string;
+  alt?: string;
+}
+
+interface BannerSectionProps {
+  bannerImage: BannerImage;
+  onClick: () => void;
+}
+
+const BannerSection: React.FC<BannerSectionProps> = ({ bannerImage, onClick }) => (
   <div
     className="bannerContainer clickable"
     onClick={onClick}

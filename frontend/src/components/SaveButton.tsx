@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import './SaveButton.css'; 
 
-const SaveButton = ({
+interface SaveButtonProps {
+  onSave: () => void; // Explicitly defining the type for onSave
+  confirmText?: string;
+  buttonLabel?: string;
+}
+
+const SaveButton: React.FC<SaveButtonProps> = ({
   onSave,
   confirmText = 'Are you sure you want to save these changes?',
   buttonLabel = 'Save?',

@@ -1,6 +1,18 @@
 import React from 'react';
 
-const AddAlumnusModal = ({ newAlumnus, onChange, onAdd, onCancel }) => (
+interface Alumnus {
+  first_name: string;
+  last_name: string;
+}
+
+interface AddAlumnusModalProps {
+  newAlumnus: Alumnus;
+  onChange: (alumnus: Alumnus) => void;
+  onAdd: () => void;
+  onCancel: () => void;
+}
+
+const AddAlumnusModal: React.FC<AddAlumnusModalProps> = ({ newAlumnus, onChange, onAdd, onCancel }) => (
   <div className="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="add-alumnus-title">
     <div className="modalContent">
       <h2 id="add-alumnus-title">Add New Alumnus</h2>

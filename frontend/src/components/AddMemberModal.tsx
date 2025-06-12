@@ -1,6 +1,21 @@
 import React from 'react';
 
-const AddMemberModal = ({
+interface NewMember {
+  img?: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
+}
+
+interface AddMemberModalProps {
+  newMember: NewMember;
+  onChange: (member: NewMember) => void;
+  onUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onAdd: () => void;
+  onCancel: () => void;
+}
+
+const AddMemberModal: React.FC<AddMemberModalProps> = ({
   newMember,
   onChange,
   onUpload,
@@ -26,7 +41,7 @@ const AddMemberModal = ({
         <input
           id="member-img"
           type="file"
-          accept="image/*"
+          accept="image/*" // BEGIN: ed8c6549bwf9
           onChange={onUpload}
         />
       </div>

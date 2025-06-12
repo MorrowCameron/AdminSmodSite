@@ -1,7 +1,12 @@
 import React from 'react';
 
-const ReviewInputs = ({ reviews, setReviews }) => {
-  const handleChange = (index, value) => {
+interface ReviewInputsProps {
+  reviews: string[];
+  setReviews: (reviews: string[]) => void;
+}
+
+const ReviewInputs: React.FC<ReviewInputsProps> = ({ reviews, setReviews }) => {
+  const handleChange = (index: number, value: string) => {
     const updated = [...reviews];
     updated[index] = value;
     setReviews(updated);

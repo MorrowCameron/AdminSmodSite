@@ -16,29 +16,35 @@ const placeholder = {
   caption: 'Placeholder caption',
 };
 
-const Home = () => {
-  const [bannerImage, setBannerImage] = useState({
+interface ModalState {
+  show: boolean;
+  source: string | null;
+  index: number | null;
+}
+
+const Home: React.FC = () => {
+  const [bannerImage, setBannerImage] = useState<{ src: string; alt: string }>({
     src: defaultBanner,
     alt: 'Main Banner',
   });
-  const [carouselImages, setCarouselImages] = useState([
+  const [carouselImages, setCarouselImages] = useState<typeof placeholder[]>([
     placeholder,
     placeholder,
     placeholder,
   ]);
-  const [carousel2Images, setCarousel2Images] = useState([
+  const [carousel2Images, setCarousel2Images] = useState<typeof placeholder[]>([
     placeholder,
     placeholder,
   ]);
-  const [modalState, setModalState] = useState({
+  const [modalState, setModalState] = useState<ModalState>({
     show: false,
     source: null,
     index: null,
   });
 
-  const [aboutText, setAboutText] = useState('Current Description');
-  const [showTimeText, setShowTimeText] = useState('Current Description');
-  const [reviewTexts, setReviewTexts] = useState([
+  const [aboutText, setAboutText] = useState<string>('Current Description');
+  const [showTimeText, setShowTimeText] = useState<string>('Current Description');
+  const [reviewTexts, setReviewTexts] = useState<string[]>([
     'Review 1',
     'Review 2',
     'Review 3',
@@ -58,19 +64,19 @@ const Home = () => {
     }
   }, []);
 
-  const openUploadModal = (source, index = null) =>
+  const openUploadModal = (source: string, index: number | null = null) =>
     setModalState({ show: true, source, index });
   const closeUploadModal = () =>
     setModalState({ show: false, source: null, index: null });
 
-  const handleImageUpload = (imageDataUrl, imageName) => {
+  const handleImageUpload = (imageDataUrl: string, imageName: string) => {
     if (modalState.source === 'banner') {
       setBannerImage({ src: imageDataUrl, alt: imageName });
     } else if (modalState.source === 'carousel1') {
       setCarouselImages((prev) => {
         const updated = [...prev];
-        updated[modalState.index] = {
-          ...updated[modalState.index],
+        updated[modalState.index!] = {
+          ...updated[modalState.index!],
           image: imageDataUrl,
           description: imageName,
         };
@@ -79,8 +85,8 @@ const Home = () => {
     } else if (modalState.source === 'carousel2') {
       setCarousel2Images((prev) => {
         const updated = [...prev];
-        updated[modalState.index] = {
-          ...updated[modalState.index],
+        updated[modalState.index!] = {
+          ...updated[modalState.index!],
           image: imageDataUrl,
           description: imageName,
         };

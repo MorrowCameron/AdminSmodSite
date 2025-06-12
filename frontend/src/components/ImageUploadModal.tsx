@@ -1,14 +1,20 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const ImageUploadModal = ({ show, onHide, onUpload }) => {
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
+interface ImageUploadModalProps {
+  show: boolean;
+  onHide: () => void;
+  onUpload: (dataUrl: string, fileName: string) => void;
+}
+
+const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ show, onHide, onUpload }) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      onUpload(reader.result, file.name);
+      onUpload(reader.result as string, file.name);
     };
     reader.readAsDataURL(file);
   };

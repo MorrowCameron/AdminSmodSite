@@ -1,5 +1,6 @@
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { ValidRoutes } from "../../backend/src/shared/ValidRoutes";
 import Home from "./pages/home";
 import AlumniPage from "./pages/alumni";
 import ContactPage from "./pages/contact";
@@ -7,8 +8,8 @@ import Members from "./pages/members";
 import Login from "./pages/login";
 import "./pages/global.css";
 
-function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -27,22 +28,22 @@ function App() {
 
       <div className="p-6">
         <Routes>
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path={ValidRoutes.LOGIN} element={<Login onLogin={handleLogin} />} />
           <Route
-            path="/"
-            element={isAuthenticated ? <Home /> : <Navigate to="/login" replace />}
+            path={ValidRoutes.HOME}
+            element={isAuthenticated ? <Home /> : <Navigate to={ValidRoutes.LOGIN} replace />}
           />
           <Route
-            path="/alumni"
-            element={isAuthenticated ? <AlumniPage /> : <Navigate to="/login" replace />}
+            path={ValidRoutes.ALUMNI}
+            element={isAuthenticated ? <AlumniPage /> : <Navigate to={ValidRoutes.LOGIN} replace />}
           />
           <Route
-            path="/contact"
-            element={isAuthenticated ? <ContactPage /> : <Navigate to="/login" replace />}
+            path={ValidRoutes.CONTACT}
+            element={isAuthenticated ? <ContactPage /> : <Navigate to={ValidRoutes.LOGIN} replace />}
           />
           <Route
-            path="/members"
-            element={isAuthenticated ? <Members /> : <Navigate to="/login" replace />}
+            path={ValidRoutes.MEMBERS}
+            element={isAuthenticated ? <Members /> : <Navigate to={ValidRoutes.LOGIN} replace />}
           />
           <Route path="*" element={<h1>404 - Not Found</h1>} />
         </Routes>

@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import './members.css';
-import SaveButton from '../components/SaveButton';
+import React, { useEffect, useState } from 'react';
 import DarkModeToggle from '../components/DarkModeToggle';
 import MemberCardList from '../components/MemberCardList';
+import SaveButton from '../components/SaveButton';
 import AddMemberModal from '../components/AddMemberModal';
+import './members.css';
 
-const Members = () => {
-  const [members, setMembers] = useState([]);
+const Members: React.FC = () => {
+
+  type NewMember = {
+    first_name: string;
+    middle_name?: string; 
+    last_name: string;
+    img?: string;
+  };
+
+  const [members, setMembers] = useState<any[]>([]);
+  const [newMember, setNewMember] = useState<NewMember>({ first_name: '', middle_name: '', last_name: '', img: '' });
   const [showModal, setShowModal] = useState(false);
-  const [newMember, setNewMember] = useState({
-    first_name: '',
-    middle_name: '',
-    last_name: '',
-    img: '',
-  });
 
   useEffect(() => {
-    const saved = localStorage.getItem('membersTextData');
-    if (saved) {
-      try {
-        setMembers(JSON.parse(saved));
-      } catch {
-        console.warn('Failed to parse members from localStorage');
-      }
+    const storedMembers = localStorage.getItem('membersTextData');
+    if (storedMembers) {
+      setMembers(JSON.parse(storedMembers));
     } else {
       setMembers([
         {
@@ -53,22 +52,22 @@ const Members = () => {
     setShowModal(false);
   };
 
-  const handleRemove = (indexToRemove) => {
+  const handleRemove = (indexToRemove: number) => {
     const name = `${members[indexToRemove].first_name} ${members[indexToRemove].last_name}`;
     if (window.confirm(`Remove ${name} from the members list?`)) {
       setMembers(prev => prev.filter((_, i) => i !== indexToRemove));
     }
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onloadend = () => {
       setNewMember(prev => ({
         ...prev,
-        img: reader.result,
+        img: reader.result as string,
       }));
     };
     reader.readAsDataURL(file);

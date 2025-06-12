@@ -1,9 +1,15 @@
-// src/components/CarouselPage.jsx
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import './carouselPage.css';
 
-const CarouselPage = ({ image, description, caption, onClick }) => {
+interface CarouselPageProps {
+  image: string;
+  description?: string;
+  caption?: string;
+  onClick: () => void;
+}
+
+const CarouselPage: React.FC<CarouselPageProps> = ({ image, description, caption, onClick }) => {
   return (
     <div
       className="carouselPageContainer clickable"

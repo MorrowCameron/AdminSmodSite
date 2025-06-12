@@ -1,6 +1,13 @@
 import React from 'react';
 
-const TextSection = ({ title, value, onChange, id = 'text-section' }) => (
+interface TextSectionProps {
+  title?: string;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  id?: string;
+}
+
+const TextSection: React.FC<TextSectionProps> = ({ title, value, onChange, id = 'text-section' }) => (
   <>
     {title && <h2>{title}</h2>}
     <label htmlFor={id} className="visually-hidden">{title || 'Text input'}</label>

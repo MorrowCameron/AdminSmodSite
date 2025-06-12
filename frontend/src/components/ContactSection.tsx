@@ -1,6 +1,15 @@
 import React from 'react';
 
-const ContactSection = ({ label, href, linkText, value, onChange, linkClass }) => {
+interface ContactSectionProps {
+  label: string;
+  href: string;
+  linkText: string;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  linkClass: string;
+}
+
+const ContactSection: React.FC<ContactSectionProps> = ({ label, href, linkText, value, onChange, linkClass }) => {
   const inputId = `input-${linkClass}`;
 
   return (
@@ -18,7 +27,7 @@ const ContactSection = ({ label, href, linkText, value, onChange, linkClass }) =
         <input
           id={inputId}
           type="text"
-          value={value}
+          value={value} // BEGIN: ed8c6549bwf9
           onChange={onChange}
           aria-label={`${linkClass} link field`}
         />

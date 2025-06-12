@@ -5,10 +5,15 @@ import AlumniList from '../components/AlumniList';
 import AddAlumnusModal from '../components/AddAlumnusModal';
 import './alumni.css';
 
-const AlumniPage = () => {
-  const [alumni, setAlumni] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [newAlumnus, setNewAlumnus] = useState({ first_name: '', last_name: '' });
+interface Alumnus {
+  first_name: string;
+  last_name: string;
+}
+
+const AlumniPage: React.FC = () => {
+  const [alumni, setAlumni] = useState<Alumnus[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [newAlumnus, setNewAlumnus] = useState<Alumnus>({ first_name: '', last_name: '' });
 
   useEffect(() => {
     const saved = localStorage.getItem('alumniData');
@@ -38,7 +43,7 @@ const AlumniPage = () => {
     setShowModal(false);
   };
 
-  const handleRemove = (indexToRemove) => {
+  const handleRemove = (indexToRemove: number) => {
     const fullName = `${alumni[indexToRemove].first_name} ${alumni[indexToRemove].last_name}`;
     if (window.confirm(`Remove ${fullName} from the alumni list?`)) {
       setAlumni(prev => prev.filter((_, i) => i !== indexToRemove));

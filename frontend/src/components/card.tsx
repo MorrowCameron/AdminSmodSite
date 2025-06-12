@@ -1,7 +1,15 @@
 import React from 'react';
 import './card.css';
 
-const Card = ({ first_name, middle_name, last_name, img, onRemove }) => {
+interface CardProps {
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
+  img: string;
+  onRemove?: () => void;
+}
+
+const Card: React.FC<CardProps> = ({ first_name, middle_name, last_name, img, onRemove }) => {
   return (
     <div className="cardContainer" style={{ position: 'relative' }}>
       {onRemove && (

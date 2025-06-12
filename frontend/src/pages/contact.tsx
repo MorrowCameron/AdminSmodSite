@@ -4,10 +4,10 @@ import ContactSection from '../components/ContactSection';
 import './contact.css';
 import DarkModeToggle from '../components/DarkModeToggle';
 
-const ContactPage = () => {
-  const [email, setEmail] = useState('');
-  const [instagram, setInstagram] = useState('');
-  const [groupMe, setGroupMe] = useState('');
+const ContactPage: React.FC = () => {
+  const [email, setEmail] = useState<string>('');
+  const [instagram, setInstagram] = useState<string>('');
+  const [groupMe, setGroupMe] = useState<string>('');
 
   useEffect(() => {
     const saved = localStorage.getItem('contactData');
@@ -45,7 +45,7 @@ const ContactPage = () => {
         href={`mailto:${email}`}
         linkText={email}
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
         linkClass="email"
       />
 
@@ -54,7 +54,7 @@ const ContactPage = () => {
         href={instagram}
         linkText="Instagram"
         value={instagram}
-        onChange={(e) => setInstagram(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInstagram(e.target.value)}
         linkClass="Instagram"
       />
 
@@ -63,7 +63,7 @@ const ContactPage = () => {
         href={groupMe}
         linkText="Workshop GroupMe"
         value={groupMe}
-        onChange={(e) => setGroupMe(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGroupMe(e.target.value)}
         linkClass="GroupMe"
       />
 
