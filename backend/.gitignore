@@ -1,0 +1,31 @@
+# Node modules
+node_modules/
+
+# Compiled output
+dist/
+build/
+*.js
+*.js.map
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Uploads (adjust if you want uploads committed)
+uploads/
+
+# Database dumps
+dump/
+
+# IDE files
+.DS_Store
+.vscode/
+.idea/
+
+# Misc
+coverage/

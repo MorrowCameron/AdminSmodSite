@@ -1,16 +1,25 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
-import path from "path";
 import { ValidRoutes } from "./shared/ValidRoutes";
 import { connectMongo } from "./connectMongo";
 import { registerAuthRoutes } from "./routes/authRoutes";
 import { CredentialsProvider } from "./CredentialsProvider";
 import { verifyAuthToken } from "./middleware/VerifyAuthToken";
+import { HomePageProvider } from "./HomePageProvider";
+import { registerHomeImageRoutes, registerHomeImageUploadRoutes, registerHomeTextRoutes } from "./routes/homePageRoutes";
+import { registerContactRoutes } from "./routes/contactPageRoutes";
+import { ContactPageProvider } from "./ContactPageProvider";
+import { AlumniPageProvider } from "./AlumniPageProvider";
+import { registerAlumniRoutes } from "./routes/alumniRoutes";
+
 
 dotenv.config();
 
 const mongoClient = connectMongo();
 const credentialsProvider = new CredentialsProvider(mongoClient);
+const homePageProvider = new HomePageProvider(mongoClient);
+const contactPageProvider = new ContactPageProvider(mongoClient);
+const alumniPageProvider =new AlumniPageProvider(mongoClient);
 
 const PORT = process.env.PORT || 3000;
 const STATIC_DIR = process.env.STATIC_DIR || "public";
@@ -31,6 +40,11 @@ app.use("/uploads", express.static(IMAGE_UPLOAD_DIR));
 app.use("/api/*", verifyAuthToken);
 
 registerAuthRoutes(app, credentialsProvider);
+registerHomeImageRoutes(app, homePageProvider);
+registerHomeImageUploadRoutes(app, homePageProvider);
+registerHomeTextRoutes(app, homePageProvider);
+registerContactRoutes(app, contactPageProvider);
+registerAlumniRoutes(app, alumniPageProvider);
 
 app.get("/api/hello", (req: Request, res: Response) => {
   res.send("Hello, World");

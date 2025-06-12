@@ -8,6 +8,7 @@ import BannerSection from '../components/BannerSection';
 import TextSection from '../components/TextSection';
 import CarouselSection from '../components/CarouselSection';
 import ReviewInputs from '../components/ReviewInputs';
+import { IAPIImageData, IAPITextData } from '../../../backend/src/shared/DatabaseHelper';
 
 const placeholder = {
   image:
@@ -22,7 +23,11 @@ interface ModalState {
   index: number | null;
 }
 
-const Home: React.FC = () => {
+interface HomeProps {
+  authToken: string;
+}
+
+const Home: React.FC<HomeProps> = ({ authToken }) => {
   const [bannerImage, setBannerImage] = useState<{ src: string; alt: string }>({
     src: defaultBanner,
     alt: 'Main Banner',
@@ -50,61 +55,170 @@ const Home: React.FC = () => {
     'Review 3',
   ]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('homeTextData');
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        if (data.aboutText) setAboutText(data.aboutText);
-        if (data.showTimeText) setShowTimeText(data.showTimeText);
-        if (data.reviewTexts) setReviewTexts(data.reviewTexts);
-      } catch {
-        console.warn('Failed to parse text data from localStorage');
+  const handleSave = async () => {
+    const textData = {
+      aboutText,
+      showTimeText,
+      reviewTexts,
+    };
+  
+    try {
+      const response = await fetch("/api/home/texts", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(textData),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to update text content");
       }
+  
+      window.alert("Changes saved! Text and images stored.");
+    } catch (err) {
+      console.error(err);
+      window.alert("Error saving text content.");
     }
-  }, []);
+  };
+  
+  useEffect(() => {
+  
+    // Fetch images from API
+    fetch('/api/home/images', {
+      headers: {
+        Authorization: `Bearer ${authToken}`, // Use authToken in the request
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch images');
+        return res.json();
+      })
+      .then((data: IAPIImageData[]) => {
+        const imageMap = Object.fromEntries(
+          data.map((img) => [img.name.toLowerCase(), img])
+        );
+  
+        // Banner
+        const banner = imageMap["banner"];
+        if (banner) {
+          setBannerImage({ src: banner.src, alt: banner.alt ?? banner.name });
+        }
+  
+        // Carousel 1
+        setCarouselImages(
+          ["carousel1a", "carousel1b", "carousel1c"].map((key) => {
+            const img = imageMap[key];
+            return img
+              ? {
+                  image: img.src,
+                  description: img.name,
+                  caption: img.alt ?? "",
+                }
+              : placeholder;
+          })
+        );
+  
+        // Carousel 2
+        setCarousel2Images(
+          ["carousel2a", "carousel2b"].map((key) => {
+            const img = imageMap[key];
+            return img
+              ? {
+                  image: img.src,
+                  description: img.name,
+                  caption: img.alt ?? "",
+                }
+              : placeholder;
+          })
+        );
+      })
+      .catch((err) => {
+        console.error("Image fetch failed:", err);
+      });
+
+  fetch('/api/home/texts', {
+    headers: {
+      Authorization: `Bearer ${authToken}`, // Use authToken in the request
+    },
+  })
+  .then((res) => {
+    if (!res.ok) throw new Error('Failed to fetch text content');
+    return res.json();
+  })
+  .then((texts: IAPITextData[]) => {
+    const map = Object.fromEntries(texts.map((t) => [t.name.toLowerCase(), t.value]));
+
+    if (map["about"]) setAboutText(map["about"]);
+    if (map["showtime"]) setShowTimeText(map["showtime"]);
+    setReviewTexts([
+      map["review1"] ?? "Review 1",
+      map["review2"] ?? "Review 2",
+      map["review3"] ?? "Review 3",
+    ]);
+  })
+  .catch((err) => {
+    console.error("Text fetch failed:", err);
+  });
+}, [authToken]);
 
   const openUploadModal = (source: string, index: number | null = null) =>
     setModalState({ show: true, source, index });
   const closeUploadModal = () =>
     setModalState({ show: false, source: null, index: null });
 
-  const handleImageUpload = (imageDataUrl: string, imageName: string) => {
-    if (modalState.source === 'banner') {
-      setBannerImage({ src: imageDataUrl, alt: imageName });
-    } else if (modalState.source === 'carousel1') {
-      setCarouselImages((prev) => {
-        const updated = [...prev];
-        updated[modalState.index!] = {
-          ...updated[modalState.index!],
-          image: imageDataUrl,
-          description: imageName,
-        };
-        return updated;
-      });
-    } else if (modalState.source === 'carousel2') {
-      setCarousel2Images((prev) => {
-        const updated = [...prev];
-        updated[modalState.index!] = {
-          ...updated[modalState.index!],
-          image: imageDataUrl,
-          description: imageName,
-        };
-        return updated;
-      });
-    }
-    closeUploadModal();
-  };
-
-  const handleSave = () => {
-    const textData = {
-      aboutText,
-      showTimeText,
-      reviewTexts,
-    };
-    localStorage.setItem('homeTextData', JSON.stringify(textData));
-    window.alert('Only text content saved. Images are not stored due to localStorage size limits.');
-  };
+    const handleImageUpload = (imageFile: File, imageAlt: string) => {
+      let imageKey: string | null = null;
+    
+      if (modalState.source === "banner") {
+        imageKey = "banner";
+        setBannerImage({ src: URL.createObjectURL(imageFile), alt: imageAlt });
+      } else if (modalState.source === "carousel1") {
+        imageKey = `carousel1${String.fromCharCode(65 + modalState.index!)}`;
+        setCarouselImages((prev) => {
+          const updated = [...prev];
+          updated[modalState.index!] = {
+            ...updated[modalState.index!],
+            image: URL.createObjectURL(imageFile),
+            description: imageAlt,
+          };
+          return updated;
+        });
+      } else if (modalState.source === "carousel2") {
+        imageKey = `carousel2${String.fromCharCode(65 + modalState.index!)}`;
+        setCarousel2Images((prev) => {
+          const updated = [...prev];
+          updated[modalState.index!] = {
+            ...updated[modalState.index!],
+            image: URL.createObjectURL(imageFile),
+            description: imageAlt,
+          };
+          return updated;
+        });
+      }
+    
+      if (imageKey) {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        formData.append("alt", imageAlt);
+    
+        fetch(`/api/home/images/${imageKey}`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`, // Use authToken in the request
+          },
+          body: formData,
+        }).then((res) => {
+          if (!res.ok) {
+            console.error("Image upload failed");
+            alert("Failed to upload image to server.");
+          }
+        });
+      }
+    
+      closeUploadModal();
+    };    
 
   return (
     <div className="homePage">

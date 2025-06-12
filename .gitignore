@@ -1,0 +1,14 @@
+# Ignore root node_modules if present
+node_modules/
+
+# Ignore build directories from both apps
+frontend/dist/
+backend/dist/
+
+# Ignore all environment configs
+**/.env
+**/.env.*
+
+# Ignore log files globally
+**/*.log
+logs/

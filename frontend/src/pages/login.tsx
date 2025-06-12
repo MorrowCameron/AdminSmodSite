@@ -3,35 +3,49 @@ import { useNavigate } from 'react-router-dom';
 import './login.css';
 
 interface LoginProps {
-  onLogin: () => void;
+  handleSuccess: (token: string) => void;
 }
 
-const Login: React.FC<LoginProps> = ({ onLogin }) => {
+const Login: React.FC<LoginProps> = ({ handleSuccess }) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // TODO: Replace with actual authentication logic
-    if (password === 'smileandnod') {
-      onLogin();
-      navigate('/');
+  const loginUser = async (username: string, password: string) => {
+    console.log("logging in!");
+    const response = await fetch("/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      handleSuccess(data.token); // Call handleSuccess on 200 response
+      navigate('/'); // Navigate to home page after successful login
     } else {
-      setError('Incorrect password. Try again!');
+      console.log("Login failed!");
+      setError("Login failed. Please check your credentials."); // Handle failure
     }
   };
 
-  // TODO: Replace with actual registration logic
-  const handleRegister = () => {
-    // Registration logic here
-    alert('Registration functionality not implemented.');
-  };
+  const registerUser = (username: string, password: string) => {
+    console.log("registering!");
+    return fetch("/auth/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+    });
+};
 
   return (
     <div className="loginPage">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => { e.preventDefault(); loginUser(username, password); }}>
         <h2>Enter Username and Password to Access Site</h2>
         <input
           type="text"
@@ -47,7 +61,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         />
         <div className="loginButtonContainer">
           <button type="submit">Login</button>
-          <button type="button" onClick={handleRegister}>Register</button>
+            <button type="button" onClick={() => registerUser(username, password)}>Register</button>
         </div>
         {error && <p className="error">{error}</p>}
       </form>

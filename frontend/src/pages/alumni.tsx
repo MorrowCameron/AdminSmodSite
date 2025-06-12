@@ -10,26 +10,32 @@ interface Alumnus {
   last_name: string;
 }
 
-const AlumniPage: React.FC = () => {
+interface AlumniPageProps {
+  authToken: string;
+}
+
+const AlumniPage: React.FC<AlumniPageProps> = ({ authToken }) => {
   const [alumni, setAlumni] = useState<Alumnus[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [newAlumnus, setNewAlumnus] = useState<Alumnus>({ first_name: '', last_name: '' });
 
   useEffect(() => {
-    const saved = localStorage.getItem('alumniData');
-    if (saved) {
-      try {
-        setAlumni(JSON.parse(saved));
-      } catch {
-        console.warn('Failed to parse alumni data from localStorage');
-      }
-    } else {
-      setAlumni([
-        { first_name: "John", last_name: "Doe" },
-        { first_name: "Jane", last_name: "Smith" },
-        { first_name: "Alice", last_name: "Johnson" },
-      ]);
-    }
+    fetch("/api/alumni", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then(res => res.json())
+      .then(data => setAlumni(data))
+      .catch(err => {
+        console.error("Failed to fetch alumni:", err);
+        setAlumni([
+          { first_name: "John", last_name: "Doe" },
+          { first_name: "Jane", last_name: "Smith" },
+          { first_name: "Alice", last_name: "Johnson" },
+        ]);
+      });
   }, []);
 
   const handleAddAlumnus = () => {
@@ -51,8 +57,25 @@ const AlumniPage: React.FC = () => {
   };
 
   const handleSave = () => {
-    localStorage.setItem('alumniData', JSON.stringify(alumni));
-    window.alert('The Alumni page will be saved to the database');
+    fetch("/api/alumni", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`
+      },      
+      body: JSON.stringify(alumni),
+    })
+      .then(res => {
+        if (res.ok) {
+          window.alert("Alumni list saved to the database!");
+        } else {
+          throw new Error("Failed to save");
+        }
+      })
+      .catch(err => {
+        console.error("Error saving alumni:", err);
+        window.alert("Failed to save alumni to the database");
+      });
   };
 
   return (

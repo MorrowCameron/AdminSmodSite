@@ -4,36 +4,58 @@ import ContactSection from '../components/ContactSection';
 import './contact.css';
 import DarkModeToggle from '../components/DarkModeToggle';
 
-const ContactPage: React.FC = () => {
+const ContactPage: React.FC<{ authToken: string }> = ({ authToken }) => {
+
   const [email, setEmail] = useState<string>('');
   const [instagram, setInstagram] = useState<string>('');
   const [groupMe, setGroupMe] = useState<string>('');
 
   useEffect(() => {
-    const saved = localStorage.getItem('contactData');
-    if (saved) {
-      try {
-        const { email, instagram, groupMe } = JSON.parse(saved);
-        setEmail(email || '');
-        setInstagram(instagram || '');
-        setGroupMe(groupMe || '');
-      } catch {
-        console.warn('Failed to parse contact data from localStorage');
-      }
-    } else {
-      setEmail('smileandnodcalpoly@gmail.com');
-      setInstagram('https://www.instagram.com/smileandnodcp?igsh=MzRlODBiNWFlZA==');
-      setGroupMe('https://groupme.com/join_group/63039027/PT35qZCs');
-    }
+    fetch("/api/contact/links", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then(res => res.json())
+      .then((data) => {
+        for (const entry of data) {
+          if (entry.name === "email") setEmail(entry.link);
+          if (entry.name === "instagram") setInstagram(entry.link);
+          if (entry.name === "groupMe") setGroupMe(entry.link);
+        }
+      })
+      .catch(err => console.error("Failed to fetch contact links", err));
   }, []);
+  
 
   const handlePageSave = () => {
-    localStorage.setItem(
-      'contactData',
-      JSON.stringify({ email, instagram, groupMe })
-    );
-    window.alert('The Contact page will be saved to the database');
+    const contactUpdates = [
+      { name: "email", link: email },
+      { name: "instagram", link: instagram },
+      { name: "groupMe", link: groupMe },
+    ];
+  
+    Promise.all(
+      contactUpdates.map(({ name, link }) =>
+        fetch(`/api/contact/links/${name}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ link }),
+        }).then((res) => {
+          if (!res.ok) {
+            console.error(`Failed to update contact: ${name}`);
+          }
+        })
+      )
+    ).then(() => {
+      window.alert("Contact information saved to database.");
+    });
   };
+  
 
   return (
     <div className="contactPage">

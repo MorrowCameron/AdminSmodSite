@@ -15,7 +15,6 @@ interface IUserDocument {
 
 export class CredentialsProvider {
   private readonly collection: Collection<ICredentialsDocument>;
-  private readonly usersCollection: Collection<IUserDocument>;
   private readonly mongoClient: MongoClient;
 
   constructor(mongoClient: MongoClient) {
@@ -29,10 +28,6 @@ export class CredentialsProvider {
     this.collection = mongoClient
       .db()
       .collection<ICredentialsDocument>(CREDS_COLLECTION_NAME);
-
-    this.usersCollection = mongoClient
-      .db()
-      .collection<IUserDocument>("users");
   }
 
   async registerUser(username: string, plaintextPassword: string): Promise<boolean> {
@@ -48,12 +43,6 @@ export class CredentialsProvider {
       _id: new ObjectId(),
       username,
       password: hash,
-    });
-
-    await this.usersCollection.insertOne({
-      _id: username,
-      username,
-      email: `${username}@example.com`,
     });
 
     return true;

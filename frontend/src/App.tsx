@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import { ValidRoutes } from "../../backend/src/shared/ValidRoutes";
 import Home from "./pages/home";
@@ -9,10 +9,14 @@ import Login from "./pages/login";
 import "./pages/global.css";
 
 const App: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  const handleLogin = () => {
+  const [authToken, setAuthToken] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleSuccess = (token: string) => {
     setIsAuthenticated(true);
+    setAuthToken(token);
+    localStorage.setItem("isAuthenticated", JSON.stringify(true));
   };
 
   return (
@@ -28,18 +32,18 @@ const App: React.FC = () => {
 
       <div className="p-6">
         <Routes>
-          <Route path={ValidRoutes.LOGIN} element={<Login onLogin={handleLogin} />} />
+          <Route path={ValidRoutes.LOGIN} element={<Login handleSuccess={handleSuccess}/>} />
           <Route
             path={ValidRoutes.HOME}
-            element={isAuthenticated ? <Home /> : <Navigate to={ValidRoutes.LOGIN} replace />}
+            element={isAuthenticated ? <Home authToken={authToken} /> : <Navigate to={ValidRoutes.LOGIN} replace />}
           />
           <Route
             path={ValidRoutes.ALUMNI}
-            element={isAuthenticated ? <AlumniPage /> : <Navigate to={ValidRoutes.LOGIN} replace />}
+            element={isAuthenticated ? <AlumniPage authToken={authToken} /> : <Navigate to={ValidRoutes.LOGIN} replace />}
           />
           <Route
             path={ValidRoutes.CONTACT}
-            element={isAuthenticated ? <ContactPage /> : <Navigate to={ValidRoutes.LOGIN} replace />}
+            element={isAuthenticated ? <ContactPage authToken={authToken} /> : <Navigate to={ValidRoutes.LOGIN} replace />}
           />
           <Route
             path={ValidRoutes.MEMBERS}
