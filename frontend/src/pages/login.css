@@ -6,6 +6,17 @@
   background: var(--background-color);
 }
 
+@media (max-width: 600px) {
+  .loginPage {
+    height: auto; /* Allow height to adjust */
+    padding: 1em; /* Add padding for smaller screens */
+  }
+
+  form {
+    width: 100%; /* Make form full width */
+  }
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -29,3 +40,17 @@ button {
   color: red;
   font-size: 0.9em;
 }
+
+.loginButtonContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Default for 600px and above */
+  justify-items: center;
+  align-items: center;
+  gap: 2em;
+}
+/* 
+@media (max-width: 600px) {
+  .loginButtonContainer {
+    grid-template-columns: 1fr;
+  }
+} */
