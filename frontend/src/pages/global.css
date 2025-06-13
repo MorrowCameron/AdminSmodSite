@@ -109,3 +109,13 @@ button {
   white-space: nowrap;
   border: 0;
 }
+
+.status {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+
+.status.error {
+  color: red;
+}

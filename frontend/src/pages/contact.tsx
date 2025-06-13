@@ -5,29 +5,43 @@ import './contact.css';
 import DarkModeToggle from '../components/DarkModeToggle';
 
 const ContactPage: React.FC<{ authToken: string }> = ({ authToken }) => {
-
   const [email, setEmail] = useState<string>('');
   const [instagram, setInstagram] = useState<string>('');
   const [groupMe, setGroupMe] = useState<string>('');
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    fetch("/api/contact/links", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-    })
-      .then(res => res.json())
-      .then((data) => {
+    const fetchContacts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/contact/links", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch contact links");
+
+        const data = await res.json();
         for (const entry of data) {
           if (entry.name === "email") setEmail(entry.link);
           if (entry.name === "instagram") setInstagram(entry.link);
           if (entry.name === "groupMe") setGroupMe(entry.link);
         }
-      })
-      .catch(err => console.error("Failed to fetch contact links", err));
-  }, []);
-  
+      } catch (err: any) {
+        console.error("Fetch error:", err);
+        setError(err.message || "Failed to load contact information.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContacts();
+  }, [authToken]);
 
   const handlePageSave = () => {
     const contactUpdates = [
@@ -35,7 +49,7 @@ const ContactPage: React.FC<{ authToken: string }> = ({ authToken }) => {
       { name: "instagram", link: instagram },
       { name: "groupMe", link: groupMe },
     ];
-  
+
     Promise.all(
       contactUpdates.map(({ name, link }) =>
         fetch(`/api/contact/links/${name}`, {
@@ -55,7 +69,9 @@ const ContactPage: React.FC<{ authToken: string }> = ({ authToken }) => {
       window.alert("Contact information saved to database.");
     });
   };
-  
+
+  if (loading) return <p className="status">Loading contact information...</p>;
+  if (error) return <p className="status error">Error: {error}</p>;
 
   return (
     <div className="contactPage">

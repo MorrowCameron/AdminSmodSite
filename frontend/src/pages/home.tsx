@@ -55,13 +55,16 @@ const Home: React.FC<HomeProps> = ({ authToken }) => {
     'Review 3',
   ]);
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const handleSave = async () => {
     const textData = {
       aboutText,
       showTimeText,
       reviewTexts,
     };
-  
+
     try {
       const response = await fetch("/api/home/texts", {
         method: "PUT",
@@ -71,42 +74,38 @@ const Home: React.FC<HomeProps> = ({ authToken }) => {
         },
         body: JSON.stringify(textData),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to update text content");
       }
-  
+
       window.alert("Changes saved! Text and images stored.");
     } catch (err) {
       console.error(err);
       window.alert("Error saving text content.");
     }
   };
-  
+
   useEffect(() => {
-  
-    // Fetch images from API
-    fetch('/api/home/images', {
-      headers: {
-        Authorization: `Bearer ${authToken}`, // Use authToken in the request
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch images');
-        return res.json();
-      })
-      .then((data: IAPIImageData[]) => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const imageRes = await fetch('/api/home/images', {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        if (!imageRes.ok) throw new Error('Failed to fetch images');
+        const imageData: IAPIImageData[] = await imageRes.json();
+
         const imageMap = Object.fromEntries(
-          data.map((img) => [img.name.toLowerCase(), img])
+          imageData.map((img) => [img.name.toLowerCase(), img])
         );
-  
-        // Banner
+
         const banner = imageMap["banner"];
         if (banner) {
           setBannerImage({ src: banner.src, alt: banner.alt ?? banner.name });
         }
-  
-        // Carousel 1
+
         setCarouselImages(
           ["carousel1a", "carousel1b", "carousel1c"].map((key) => {
             const img = imageMap[key];
@@ -119,8 +118,7 @@ const Home: React.FC<HomeProps> = ({ authToken }) => {
               : placeholder;
           })
         );
-  
-        // Carousel 2
+
         setCarousel2Images(
           ["carousel2a", "carousel2b"].map((key) => {
             const img = imageMap[key];
@@ -133,92 +131,92 @@ const Home: React.FC<HomeProps> = ({ authToken }) => {
               : placeholder;
           })
         );
-      })
-      .catch((err) => {
-        console.error("Image fetch failed:", err);
-      });
 
-  fetch('/api/home/texts', {
-    headers: {
-      Authorization: `Bearer ${authToken}`, // Use authToken in the request
-    },
-  })
-  .then((res) => {
-    if (!res.ok) throw new Error('Failed to fetch text content');
-    return res.json();
-  })
-  .then((texts: IAPITextData[]) => {
-    const map = Object.fromEntries(texts.map((t) => [t.name.toLowerCase(), t.value]));
+        const textRes = await fetch('/api/home/texts', {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        if (!textRes.ok) throw new Error('Failed to fetch text content');
+        const texts: IAPITextData[] = await textRes.json();
 
-    if (map["about"]) setAboutText(map["about"]);
-    if (map["showtime"]) setShowTimeText(map["showtime"]);
-    setReviewTexts([
-      map["review1"] ?? "Review 1",
-      map["review2"] ?? "Review 2",
-      map["review3"] ?? "Review 3",
-    ]);
-  })
-  .catch((err) => {
-    console.error("Text fetch failed:", err);
-  });
-}, [authToken]);
+        const map = Object.fromEntries(texts.map((t) => [t.name.toLowerCase(), t.value]));
+
+        if (map["about"]) setAboutText(map["about"]);
+        if (map["showtime"]) setShowTimeText(map["showtime"]);
+        setReviewTexts([
+          map["review1"] ?? "Review 1",
+          map["review2"] ?? "Review 2",
+          map["review3"] ?? "Review 3",
+        ]);
+      } catch (err: any) {
+        console.error("Home page fetch error:", err);
+        setError(err.message || "Failed to load content");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [authToken]);
 
   const openUploadModal = (source: string, index: number | null = null) =>
     setModalState({ show: true, source, index });
   const closeUploadModal = () =>
     setModalState({ show: false, source: null, index: null });
 
-    const handleImageUpload = (imageFile: File, imageAlt: string) => {
-      let imageKey: string | null = null;
-    
-      if (modalState.source === "banner") {
-        imageKey = "banner";
-        setBannerImage({ src: URL.createObjectURL(imageFile), alt: imageAlt });
-      } else if (modalState.source === "carousel1") {
-        imageKey = `carousel1${String.fromCharCode(65 + modalState.index!)}`;
-        setCarouselImages((prev) => {
-          const updated = [...prev];
-          updated[modalState.index!] = {
-            ...updated[modalState.index!],
-            image: URL.createObjectURL(imageFile),
-            description: imageAlt,
-          };
-          return updated;
-        });
-      } else if (modalState.source === "carousel2") {
-        imageKey = `carousel2${String.fromCharCode(65 + modalState.index!)}`;
-        setCarousel2Images((prev) => {
-          const updated = [...prev];
-          updated[modalState.index!] = {
-            ...updated[modalState.index!],
-            image: URL.createObjectURL(imageFile),
-            description: imageAlt,
-          };
-          return updated;
-        });
-      }
-    
-      if (imageKey) {
-        const formData = new FormData();
-        formData.append("image", imageFile);
-        formData.append("alt", imageAlt);
-    
-        fetch(`/api/home/images/${imageKey}`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${authToken}`, // Use authToken in the request
-          },
-          body: formData,
-        }).then((res) => {
-          if (!res.ok) {
-            console.error("Image upload failed");
-            alert("Failed to upload image to server.");
-          }
-        });
-      }
-    
-      closeUploadModal();
-    };    
+  const handleImageUpload = (imageFile: File, imageAlt: string) => {
+    let imageKey: string | null = null;
+
+    if (modalState.source === "banner") {
+      imageKey = "banner";
+      setBannerImage({ src: URL.createObjectURL(imageFile), alt: imageAlt });
+    } else if (modalState.source === "carousel1") {
+      imageKey = `carousel1${String.fromCharCode(65 + modalState.index!)}`;
+      setCarouselImages((prev) => {
+        const updated = [...prev];
+        updated[modalState.index!] = {
+          ...updated[modalState.index!],
+          image: URL.createObjectURL(imageFile),
+          description: imageAlt,
+        };
+        return updated;
+      });
+    } else if (modalState.source === "carousel2") {
+      imageKey = `carousel2${String.fromCharCode(65 + modalState.index!)}`;
+      setCarousel2Images((prev) => {
+        const updated = [...prev];
+        updated[modalState.index!] = {
+          ...updated[modalState.index!],
+          image: URL.createObjectURL(imageFile),
+          description: imageAlt,
+        };
+        return updated;
+      });
+    }
+
+    if (imageKey) {
+      const formData = new FormData();
+      formData.append("image", imageFile);
+      formData.append("alt", imageAlt);
+
+      fetch(`/api/home/images/${imageKey}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: formData,
+      }).then((res) => {
+        if (!res.ok) {
+          console.error("Image upload failed");
+          alert("Failed to upload image to server.");
+        }
+      });
+    }
+
+    closeUploadModal();
+  };
+
+  if (loading) return <p className="status">Loading home page content...</p>;
+  if (error) return <p className="status error">Error: {error}</p>;
 
   return (
     <div className="homePage">

@@ -10,38 +10,56 @@ const Login: React.FC<LoginProps> = ({ handleSuccess }) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const loginUser = async (username: string, password: string) => {
-    console.log("logging in!");
-    const response = await fetch("/auth/login", {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch("/auth/login", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
-    });
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      handleSuccess(data.token); // Call handleSuccess on 200 response
-      navigate('/'); // Navigate to home page after successful login
-    } else {
-      console.log("Login failed!");
-      setError("Login failed. Please check your credentials."); // Handle failure
+      if (response.ok) {
+        const data = await response.json();
+        handleSuccess(data.token);
+        navigate('/');
+      } else {
+        setError("Login failed. Please check your credentials.");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const registerUser = (username: string, password: string) => {
-    console.log("registering!");
-    return fetch("/auth/register", {
+  const registerUser = async (username: string, password: string) => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch("/auth/register", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
-    });
-};
+      });
+
+      if (!response.ok) {
+        setError("Registration failed. Try a different username.");
+      } else {
+        setError("Registered successfully! Now log in.");
+      }
+    } catch (err) {
+      console.error("Registration error:", err);
+      setError("An unexpected error occurred during registration.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="loginPage">
@@ -52,18 +70,23 @@ const Login: React.FC<LoginProps> = ({ handleSuccess }) => {
           placeholder="Enter username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          disabled={loading}
         />
         <input
           type="password"
           placeholder="Enter password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          disabled={loading}
         />
         <div className="loginButtonContainer">
-          <button type="submit">Login</button>
-            <button type="button" onClick={() => registerUser(username, password)}>Register</button>
+          <button type="submit" disabled={loading}>Login</button>
+          <button type="button" onClick={() => registerUser(username, password)} disabled={loading}>
+            Register
+          </button>
         </div>
-        {error && <p className="error">{error}</p>}
+        {loading && <p className="status">Please wait...</p>}
+        {error && <p className="status error">{error}</p>}
       </form>
     </div>
   );

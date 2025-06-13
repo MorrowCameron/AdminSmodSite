@@ -19,24 +19,37 @@ const AlumniPage: React.FC<AlumniPageProps> = ({ authToken }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [newAlumnus, setNewAlumnus] = useState<Alumnus>({ first_name: '', last_name: '' });
 
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    fetch("/api/alumni", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-    })
-      .then(res => res.json())
-      .then(data => setAlumni(data))
-      .catch(err => {
+    const fetchAlumni = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/alumni", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch alumni list");
+        }
+
+        const data = await res.json();
+        setAlumni(data);
+      } catch (err: any) {
         console.error("Failed to fetch alumni:", err);
-        setAlumni([
-          { first_name: "John", last_name: "Doe" },
-          { first_name: "Jane", last_name: "Smith" },
-          { first_name: "Alice", last_name: "Johnson" },
-        ]);
-      });
-  }, []);
+        setError(err.message || "Unable to load alumni.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAlumni();
+  }, [authToken]);
 
   const handleAddAlumnus = () => {
     setAlumni(prev => [...prev, newAlumnus]);
@@ -62,7 +75,7 @@ const AlumniPage: React.FC<AlumniPageProps> = ({ authToken }) => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${authToken}`
-      },      
+      },
       body: JSON.stringify(alumni),
     })
       .then(res => {
@@ -77,6 +90,9 @@ const AlumniPage: React.FC<AlumniPageProps> = ({ authToken }) => {
         window.alert("Failed to save alumni to the database");
       });
   };
+
+  if (loading) return <p className="status">Loading alumni list...</p>;
+  if (error) return <p className="status error">Error: {error}</p>;
 
   return (
     <div className='alumniPage'>

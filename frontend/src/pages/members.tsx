@@ -27,21 +27,35 @@ const Members: React.FC<{ authToken: string }> = ({ authToken }) => {
   });
   const [showModal, setShowModal] = useState(false);
   const [removedIds, setRemovedIds] = useState<ObjectId[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
+
     fetch('/api/members', {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch members');
+        }
+        return res.json();
+      })
       .then(data => {
-        console.log(data);
+        console.log('Fetched members:', data);
         setMembers(data);
         setOriginalMembers(data);
+        setLoading(false); // ✅ Done fetching
       })
       .catch(err => {
         console.error('Failed to load members:', err);
+        setError(err.message || 'Failed to load members');
+        setLoading(false); // ✅ Even if error, stop loading
       });
   }, [authToken]);
 
@@ -120,6 +134,12 @@ const Members: React.FC<{ authToken: string }> = ({ authToken }) => {
       alert('Failed to save changes.');
     }
   };
+
+// Render loading
+  if (loading) return <p className="status">Loading members...</p>;
+
+// Render error
+  if (error) return <p className="status error">Error: {error}</p>;
 
   return (
     <div className="memberPage">
