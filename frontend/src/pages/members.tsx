@@ -4,99 +4,130 @@ import MemberCardList from '../components/MemberCardList';
 import SaveButton from '../components/SaveButton';
 import AddMemberModal from '../components/AddMemberModal';
 import './members.css';
+import { ObjectId } from 'mongodb';
 
-const Members: React.FC = () => {
+interface Member {
+  _id?: ObjectId;
+  id?: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
+  src?: string;
+  alt?: string;
+  imageFile?: File;
+}
 
-  type NewMember = {
-    first_name: string;
-    middle_name?: string; 
-    last_name: string;
-    img?: string;
-  };
-
-  const [members, setMembers] = useState<any[]>([]);
-  const [newMember, setNewMember] = useState<NewMember>({ first_name: '', middle_name: '', last_name: '', img: '' });
+const Members: React.FC<{ authToken: string }> = ({ authToken }) => {
+  const [members, setMembers] = useState<Member[]>([]);
+  const [originalMembers, setOriginalMembers] = useState<Member[]>([]);
+  const [newMember, setNewMember] = useState<Member>({
+    first_name: '',
+    middle_name: '',
+    last_name: '',
+  });
   const [showModal, setShowModal] = useState(false);
+  const [removedIds, setRemovedIds] = useState<ObjectId[]>([]);
 
   useEffect(() => {
-    const storedMembers = localStorage.getItem('membersTextData');
-    if (storedMembers) {
-      setMembers(JSON.parse(storedMembers));
-    } else {
-      setMembers([
-        {
-          first_name: 'John',
-          middle_name: 'Q',
-          last_name: 'Smith',
-          img: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
-        },
-        {
-          first_name: 'Jane',
-          middle_name: '',
-          last_name: 'Doe',
-          img: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
-        },
-        {
-          first_name: 'Sam',
-          middle_name: '',
-          last_name: 'Lee',
-          img: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
-        },
-      ]);
-    }
-  }, []);
+    fetch('/api/members', {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        setMembers(data);
+        setOriginalMembers(data);
+      })
+      .catch(err => {
+        console.error('Failed to load members:', err);
+      });
+  }, [authToken]);
 
   const handleAdd = () => {
-    setMembers([...members, newMember]);
-    setNewMember({ first_name: '', middle_name: '', last_name: '', img: '' });
+    setMembers(prev => [...prev, { ...newMember }]);
+    setNewMember({ first_name: '', middle_name: '', last_name: '' });
     setShowModal(false);
   };
 
-  const handleRemove = (indexToRemove: number) => {
-    const name = `${members[indexToRemove].first_name} ${members[indexToRemove].last_name}`;
-    if (window.confirm(`Remove ${name} from the members list?`)) {
-      setMembers(prev => prev.filter((_, i) => i !== indexToRemove));
+  const handleRemove = (index: number) => {
+    const member = members[index];
+    if (window.confirm(`Remove ${member.first_name} ${member.last_name}?`)) {
+      console.log(member);
+      if (member._id) {
+        console.log(`Marking member ${member._id} for removal`);
+        setRemovedIds(prev => [...prev, member._id!]);
+      }
+      setMembers(prev => prev.filter((_, i) => i !== index));
     }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setNewMember(prev => ({
-        ...prev,
-        img: reader.result as string,
-      }));
-    };
-    reader.readAsDataURL(file);
+    setNewMember(prev => ({
+      ...prev,
+      imageFile: file,
+      src: URL.createObjectURL(file),
+    }));
   };
 
   const handleCancel = () => {
-    setNewMember({ first_name: '', middle_name: '', last_name: '', img: '' });
+    setNewMember({ first_name: '', middle_name: '', last_name: '' });
     setShowModal(false);
   };
 
-  const handleSave = () => {
-    const textOnly = members.map(({ first_name, middle_name, last_name, img }) => ({
-      first_name,
-      middle_name,
-      last_name,
-      img: img?.startsWith('http') ? img : 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
-    }));
-    localStorage.setItem('membersTextData', JSON.stringify(textOnly));
-    window.alert('Only text-based member data has been saved to localStorage. Eventually this will be a database save.');
+  const handleSave = async () => {
+    try {
+      // Save new members
+      const newEntries = members.filter(m => !m.id);
+      for (const member of newEntries) {
+        const formData = new FormData();
+        formData.append('first_name', member.first_name);
+        formData.append('middle_name', member.middle_name || '');
+        formData.append('last_name', member.last_name);
+        formData.append('alt', member.alt || '');
+        if (member.imageFile) {
+          formData.append('image', member.imageFile);
+        } else {
+          console.warn('Skipping member with no image:', member);
+          continue;
+        }
+
+        const res = await fetch('/api/members/full', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${authToken}` },
+          body: formData,
+        });
+
+        if (!res.ok) throw new Error(`Failed to add member: ${res.status}`);
+      }
+
+      // Delete removed members
+      for (const _id of removedIds) {
+        const res = await fetch(`/api/members/${_id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+
+        if (!res.ok) throw new Error(`Failed to delete member ${_id}: ${res.status}`);
+      }
+
+      alert('Changes saved!');
+    } catch (err) {
+      console.error('Error during save:', err);
+      alert('Failed to save changes.');
+    }
   };
 
   return (
-    <div className='memberPage'>
+    <div className="memberPage">
       <DarkModeToggle />
       <h1>Current members</h1>
 
-      <div className='memberContainer'>
+      <div className="memberContainer">
         <MemberCardList members={members} onRemove={handleRemove} />
-
         <div className="buttonContainer">
           <button onClick={() => setShowModal(true)}>Add Member</button>
         </div>
@@ -105,7 +136,7 @@ const Members: React.FC = () => {
       <div className="buttonContainer">
         <SaveButton
           onSave={handleSave}
-          confirmText="Save only text and remote image URLs for this member list?"
+          confirmText="Save all changes to the server?"
           buttonLabel="Save Changes"
         />
       </div>

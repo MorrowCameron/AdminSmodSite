@@ -1,6 +1,5 @@
 import { Express, Request, Response } from "express";
 import { AlumniPageProvider } from "../AlumniPageProvider";
-import { verifyAuthToken } from "../middleware/VerifyAuthToken";
 
 export function registerAlumniRoutes(app: Express, provider: AlumniPageProvider) {
   app.get("/api/alumni", async (_req: Request, res: Response) => {

@@ -47,7 +47,7 @@ const App: React.FC = () => {
           />
           <Route
             path={ValidRoutes.MEMBERS}
-            element={isAuthenticated ? <Members /> : <Navigate to={ValidRoutes.LOGIN} replace />}
+            element={isAuthenticated ? <Members authToken={authToken}/> : <Navigate to={ValidRoutes.LOGIN} replace />}
           />
           <Route path="*" element={<h1>404 - Not Found</h1>} />
         </Routes>

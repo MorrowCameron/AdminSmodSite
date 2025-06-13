@@ -11,7 +11,8 @@ import { registerContactRoutes } from "./routes/contactPageRoutes";
 import { ContactPageProvider } from "./ContactPageProvider";
 import { AlumniPageProvider } from "./AlumniPageProvider";
 import { registerAlumniRoutes } from "./routes/alumniRoutes";
-
+import { registerMemberRoutes } from "./routes/memberRoutes";
+import { MemberPageProvider } from "./MemberPageProvider";
 
 dotenv.config();
 
@@ -19,7 +20,8 @@ const mongoClient = connectMongo();
 const credentialsProvider = new CredentialsProvider(mongoClient);
 const homePageProvider = new HomePageProvider(mongoClient);
 const contactPageProvider = new ContactPageProvider(mongoClient);
-const alumniPageProvider =new AlumniPageProvider(mongoClient);
+const alumniPageProvider = new AlumniPageProvider(mongoClient);
+const memberPageProvider = new MemberPageProvider(mongoClient);
 
 const PORT = process.env.PORT || 3000;
 const STATIC_DIR = process.env.STATIC_DIR || "public";
@@ -45,6 +47,7 @@ registerHomeImageUploadRoutes(app, homePageProvider);
 registerHomeTextRoutes(app, homePageProvider);
 registerContactRoutes(app, contactPageProvider);
 registerAlumniRoutes(app, alumniPageProvider);
+registerMemberRoutes(app, memberPageProvider);
 
 app.get("/api/hello", (req: Request, res: Response) => {
   res.send("Hello, World");

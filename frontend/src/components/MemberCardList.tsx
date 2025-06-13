@@ -2,11 +2,11 @@ import React from 'react';
 import Card from './card';
 
 interface Member {
-  id: number;
-  name: string;
+  id?: string;
+  middle_name?: string;
   first_name: string; 
   last_name: string;  
-  img: string;      
+  src?: string;      
 }
 
 interface MemberCardListProps {

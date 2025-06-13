@@ -5,11 +5,11 @@ interface CardProps {
   first_name: string;
   middle_name?: string;
   last_name: string;
-  img: string;
+  src?: string;
   onRemove?: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ first_name, middle_name, last_name, img, onRemove }) => {
+const Card: React.FC<CardProps> = ({ first_name, middle_name, last_name, src, onRemove }) => {
   return (
     <div className="cardContainer" style={{ position: 'relative' }}>
       {onRemove && (
@@ -23,7 +23,7 @@ const Card: React.FC<CardProps> = ({ first_name, middle_name, last_name, img, on
       )}
       <div className="subcardContainer">
         <div className="imageContainer">
-          <img src={img} alt={`${first_name} ${last_name}`} />
+          <img src={src} alt={`${first_name} ${last_name}`} />
         </div>
       </div>
       <div className="textStyling">{first_name} {middle_name} {last_name}</div>
